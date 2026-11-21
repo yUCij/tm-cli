@@ -1,0 +1,30 @@
+name: Mirror Image to GHCR
+
+on:
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+  schedule:
+    - cron: '0 4 * * 1' # Runs every Monday at 4 AM UTC
+
+permissions:
+  contents: read
+  packages: write # Required to push to GHCR
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+          - source: 'traffmonetizer/cli_v2:latest'
+            target: 'ghcr.io/${{ github.repository_owner }}/tm-cli_v2:latest'
+          - source: 'alpine:3.19'
+            target: 'ghcr.io/${{ github.repository_owner }}/alpine:3.19'
+    steps:
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Pull, Tag, and Push
+        run: |
+          docker pull ${{ matrix.image.source }}
+          docker tag ${{ matrix.image.source }} ${{ matrix.image.target }}
+          docker push ${{ matrix.image.target }}
