@@ -16,9 +16,9 @@ jobs:
       matrix:
         image:
           - source: 'traffmonetizer/cli_v2:latest'
-            target: 'ghcr.io/${{ github.repository_owner }}/tm-cli_v2:latest'
+            target: 'ghcr.io/yucij/tm-cli_v2:latest'
           - source: 'alpine:3.19'
-            target: 'ghcr.io/${{ github.repository_owner }}/alpine:3.19'
+            target: 'ghcr.io/yucij/alpine:3.19'
     steps:
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
