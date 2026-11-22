@@ -1,0 +1,25 @@
+services:
+  tm:
+    image: traffmonetizer/cli_v2:latest
+    container_name: tm
+    restart: unless-stopped
+    environment:
+      HOME: /var/lib/tm
+    volumes:
+      - tm-data:/var/lib/tm
+    command: ["--token", "YOUR_TOKEN", "start", "accept"]
+
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_POLL_INTERVAL: "21600"
+    command: ["tm"]
+
+volumes:
+  tm-data:
+    name: tm-data
